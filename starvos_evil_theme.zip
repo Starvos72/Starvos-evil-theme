@@ -1,1 +1,10 @@
-
+starvos_blood_theme.zip
+├── css/
+│   └── style.css
+├── js/
+│   └── script.js
+├── fonts/
+│   └── Orbitron-Regular.ttf
+├── images/
+│   └── background.jpg
+└── index.html  (optional, can remove)
