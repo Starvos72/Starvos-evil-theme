@@ -1,38 +1,30 @@
 #!/bin/bash
 
 THEME_NAME="starvos"
-CONTAINER="pterodactyl_panel"
-TMP_DIR="/tmp/$THEME_NAME-theme"
+PANEL_PATH="/var/www/pterodactyl"
+TMP_DIR="/tmp/${THEME_NAME}-theme"
 
-echo "📥 Downloading Starvos Blood Theme..."
+echo "📥 Downloading Starvos Evil Full Theme..."
 rm -rf "$TMP_DIR"
-mkdir -p "$TMP_DIR" && cd "$TMP_DIR"
+mkdir -p "$TMP_DIR"
+cd "$TMP_DIR"
 
-curl -sL https://raw.githubusercontent.com/YOUR_USERNAME/starvos-blood-theme-installer/main/starvos_blood_theme.zip -o starvos.zip
-unzip -o starvos.zip
+curl -sL https://raw.githubusercontent.com/Starvos72/starvos-evil-theme/main/starvos_evil_fulltheme.zip -o starvos.zip
 
-echo "🐳 Copying theme into Docker container..."
-docker cp . "$CONTAINER:/app/resources/themes/$THEME_NAME"
+echo "📦 Unzipping theme..."
+unzip -o starvos.zip > /dev/null
 
-echo "📝 Creating theme.json inside container..."
-docker exec "$CONTAINER" bash -c "cat > /app/resources/themes/$THEME_NAME/theme.json" <<'EOF'
-{
-  "name": "Starvos Blood Theme",
-  "description": "Dark theme with blood drops",
-  "inject": {
-    "css": ["css/style.css"],
-    "js": ["js/script.js"]
-  }
-}
-EOF
+echo "📁 Installing theme to Pterodactyl directory..."
+rm -rf "$PANEL_PATH/resources/themes/$THEME_NAME"
+mkdir -p "$PANEL_PATH/resources/themes/$THEME_NAME"
+cp -r . "$PANEL_PATH/resources/themes/$THEME_NAME"
 
-echo "⚙️ Updating APP_THEME in .env..."
-docker exec "$CONTAINER" sed -i 's/^APP_THEME=.*/APP_THEME=starvos/' /app/.env
+echo "📝 Updating .env to use theme..."
+sed -i 's/^APP_THEME=.*/APP_THEME=starvos/' "$PANEL_PATH/.env"
 
 echo "♻️ Clearing view cache..."
-docker exec "$CONTAINER" php /app/artisan view:clear
+cd "$PANEL_PATH"
+php artisan view:clear
 
-echo "🔁 Restarting container..."
-docker restart "$CONTAINER"
-
-echo "✅ Starvos Blood Theme installed!"
+echo "✅ Starvos Evil Theme has been installed!"
+echo "💡 Visit your panel to see the bloody new look."
